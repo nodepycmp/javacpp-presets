@@ -27,4 +27,3 @@ matrix:
         env: PROJ=ffmpeg OS=macosx-x86_64
         install: true
         script: ./ci/install-travis.sh
-
