@@ -58,7 +58,7 @@ IF "%PARTIAL_CPPBUILD%"=="1" (
 
 IF "%APPVEYOR_PULL_REQUEST_NUMBER%"=="" (
    echo Deploy snaphot for %PROJ%
-   call mvn deploy -B -U --settings .\ci\settings.xml -Dmaven.test.skip=true %MAVEN_RELEASE% -Djavacpp.platform=%OS% -Djavacpp.platform.extension=%EXT% -pl .,%PROJ%
+   call mvn install -B -U --settings .\ci\settings.xml -Dmaven.test.skip=true %MAVEN_RELEASE% -Djavacpp.platform=%OS% -Djavacpp.platform.extension=%EXT% -pl .,%PROJ%
    IF ERRORLEVEL 1 (
      echo Quitting with error  
      exit 1
@@ -66,7 +66,7 @@ IF "%APPVEYOR_PULL_REQUEST_NUMBER%"=="" (
    FOR %%a in ("%PROJ:,=" "%") do (
     echo Deploy platform %%a 
     cd %%a
-    call mvn deploy -B -U --settings ..\ci\settings.xml -f platform -Dmaven.test.skip=true %MAVEN_RELEASE% -Djavacpp.platform=%OS% -Djavacpp.platform.extension=%EXT%
+    call mvn install -B -U --settings ..\ci\settings.xml -f platform -Dmaven.test.skip=true %MAVEN_RELEASE% -Djavacpp.platform=%OS% -Djavacpp.platform.extension=%EXT%
     IF ERRORLEVEL 1 (
       echo Quitting with error  
       exit 1
