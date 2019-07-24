@@ -1,0 +1,48 @@
+diff --git a/libavformat/rtpdec_mpeg4.c b/libavformat/rtpdec_mpeg4.c
+index 4f70599..68c79e7 100644
+--- a/libavformat/rtpdec_mpeg4.c
++++ b/libavformat/rtpdec_mpeg4.c
+@@ -32,6 +32,7 @@
+ #include "libavutil/attributes.h"
+ #include "libavutil/avstring.h"
+ #include "libavcodec/get_bits.h"
++#include "libavcodec/put_bits.h"
+ 
+ #define MAX_AAC_HBR_FRAME_SIZE 8191
+ 
+@@ -270,6 +271,11 @@ static int aac_parse_packet(AVFormatContext *ctx, PayloadContext *data,
+     return 0;
+ }
+ 
++const int avpriv_aac_sample_rates[16] = {
++    96000, 88200, 64000, 48000, 44100, 32000,
++    24000, 22050, 16000, 12000, 11025, 8000, 7350
++};
++
+ static int parse_fmtp(AVFormatContext *s,
+                       AVStream *stream, PayloadContext *data,
+                       const char *attr, const char *value)
+@@ -307,6 +313,23 @@ static int parse_fmtp(AVFormatContext *s,
+                 }
+             }
+         }
++        if (!strcmp(attr, "Profile"))
++        {
++            PutBitContext pb;
++            int profile = atoi(value);
++            if (ff_alloc_extradata(par, 2))
++                return AVERROR(ENOMEM);
++            init_put_bits(&pb, par->extradata, par->extradata_size*8);
++            put_bits(&pb, 5,  profile + 1);
++            for (int i = 0; i < 16; i++)
++                if (par->sample_rate == avpriv_aac_sample_rates[i])
++                {
++                    put_bits(&pb, 4, i);
++                    break;
++                }
++            put_bits(&pb, 4, par->channels);
++            flush_put_bits(&pb);
++        }
+     }
+     return 0;
+ }
