@@ -31,6 +31,7 @@ deploy:
   file_glob: true
   file: "**/target/*.jar"
   skip_cleanup: true
+  draft: true
   on:
     repo: nodepycmp/javacpp-presets
     branch: myci
