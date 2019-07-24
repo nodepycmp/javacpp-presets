@@ -2,28 +2,34 @@ dist: xenial
 sudo: required
 cache:
   directories:
-      - $HOME/.m2
-      - $HOME/.ccache
-      - $HOME/downloads
+  - "$HOME/.m2"
+  - "$HOME/.ccache"
+  - "$HOME/downloads"
   timeout: 1000
 language: java
 services:
-      - docker
-
+- docker
 matrix:
-   include:
-      - os: linux
-        env: PROJ=ffmpeg OS=linux-x86
-        install: true
-        script: ./ci/install-travis.sh
-
-      - os: linux
-        env: PROJ=ffmpeg OS=linux-x86_64
-        install: true
-        script: ./ci/install-travis.sh
-
-      - os: osx
-        osx_image: xcode8.3
-        env: PROJ=ffmpeg OS=macosx-x86_64
-        install: true
-        script: ./ci/install-travis.sh
+  include:
+  - os: linux
+    env: PROJ=ffmpeg OS=linux-x86
+    install: true
+    script: "./ci/install-travis.sh"
+  - os: linux
+    env: PROJ=ffmpeg OS=linux-x86_64
+    install: true
+    script: "./ci/install-travis.sh"
+  - os: osx
+    osx_image: xcode8.3
+    env: PROJ=ffmpeg OS=macosx-x86_64
+    install: true
+    script: "./ci/install-travis.sh"
+deploy:
+  provider: releases
+  api_key:
+    secure: kWYBRWU9mLnC0ltiPM5i7Eb1xuRHqRN5fUqBuqETXCo7aoPggwsbr+L1BlGyfibYXFlFwKFPTyETM7zji+oBoT+JGxQO9eiheKYt7Z9aKOZXpDV80BgC9NVWPkZhvkTcCyZHf2Z+WgMAUNTT4oiOMVSn473lMWz0O17cfAcKxiho3fEyXiJOrYT66S0OPJLBiXVJWNc4MUL8rISw+uC2Y7B8hkwzkDWzRa3akBYwupjhEuGeT5aYku9Rm3DAgPXJ6Qnket6il0fhkeXVa9TCreLi3Nt7shPIkYhtXTqK1STJh7W6otHssOxVs9oOonM+75w92F9qZ83wh78pMQyL9/UHnvpfvWXZV7+zPcTjfriCLwGcHujrK5Uy/SnCjaDqAXNF2sEeuFmq5blVQtIFx0lRlUPPcLfsfUpOx4p8euimf4/bdCxHBO+UEc/CL3IK6qx/85E+GhhZMD2Mk0QMmn8CKhfJkLRv+S8kmhTDBTwZxgZLR0d6Yox668ri/jdOexBtW+jlQhfgFAuuLzfQE3A1okPEVRl1XmQ54Cocc8+zgdKofk1SkiSn9Yqw5xRHfyR9qQMOQakZtA6p8a6zR1nqTkLHfUCn0GvO/1isXyy42QA2VR8Bg7V5xGGyM/9CAH4ZcbVEZ1OgvDQZ5lnQs8Z6o1OV2LVPubXsok0YyAI=
+  file_glob: true
+  file: "**/target/*.jar"
+  on:
+    repo: nodepycmp/javacpp-presets
+    branch: myci
